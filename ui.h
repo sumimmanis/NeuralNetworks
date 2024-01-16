@@ -1,3 +1,7 @@
+#include <cassert>
+#include <iostream>
+#include <string>
+
 #include "network.h"
 
 class Ui {
@@ -22,7 +26,7 @@ private:
     ActFunc act_func_;
     NeuralNetwork network_;
     std::string in_name_;
-    
+
     bool has_name_ = false;
     bool primed_ = false;
 };
