@@ -48,7 +48,7 @@ void Ui::Prime() {
     }
 }
 
-void Ui::Test() {
+void Ui::Train() {
     try {
         if (not primed_) {
             throw std::invalid_argument("network is not primed");

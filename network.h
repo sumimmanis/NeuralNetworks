@@ -19,24 +19,26 @@ public:
 
     void Prime(std::deque<int>& hidden_layers, ActFunc act_func_name);
 
-    void InitRandomMatrix(Eigen::MatrixXd& mat, int m, int n);
-
-    void ForwardProp(Eigen::MatrixXd& X);
-
     void Train(int batch_size, double rate, int runs);
 
-    void TrainRun(int batch_size, int rate, std::vector<Eigen::MatrixXd>& vNbW,
-                  std::vector<Eigen::MatrixXd>& vNbB);
-
-    void LastError(Eigen::MatrixXd& X, Eigen::MatrixXd& Nb);
-
-    void BackProp(Eigen::MatrixXd& Nb);
+    auto GetTestError() -> double;
 
     void Save(const std::string& name);
 
     void LoadAndPrime(const std::string& name);
 
-    auto GetTestError() -> double;
+private:
+    void InitRandomMatrix(Eigen::MatrixXd& mat, int m, int n);
+
+    void ForwardProp(Eigen::MatrixXd& X);
+
+    void TrainRun(int batch_size, double rate, int num_of_batces,
+                  std::vector<Eigen::MatrixXd>& vNbW, std::vector<Eigen::MatrixXd>& vNbB,
+                  Eigen::MatrixXd& X);
+
+    void LastError(Eigen::MatrixXd& X, Eigen::MatrixXd& Nb);
+
+    void BackProp(Eigen::MatrixXd& Nb);
 
 private:
     struct Layer {
@@ -50,6 +52,13 @@ private:
         Eigen::MatrixXd nablW;
     };
 
+    static constexpr int kTtrainNum = 60000;
+    static constexpr int kTestNum = 10000;
+
+    static constexpr int kIn = 28 * 28;
+    static constexpr int kOut = 10;
+
+private:
     std::vector<Layer> layers_;
 
     Data train_data_;
@@ -59,10 +68,4 @@ private:
     std::function<double(double)> dfunc_;
 
     int deapth_;
-
-    static constexpr int kTtrainNum = 60000;
-    static constexpr int kTestNum = 10000;
-
-    static constexpr int kIn = 28 * 28;
-    static constexpr int kOut = 10;
 };

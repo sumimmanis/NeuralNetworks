@@ -26,6 +26,6 @@ auto GetDxActFunc(ActFunc name) -> std::function<double(double)>;
 
 void SoftMaxInplace(int size, double* vec);
 
-auto Error(int size, double* vec, int ind) -> double;
+auto IsCorrectResult(int size, double* vec, int label) -> bool;
 
-void DxErrorInplace(int size, double* vec, int ind);
+void DxErrorInplace(int size, double* vec, int label);

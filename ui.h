@@ -14,7 +14,7 @@ public:
 
     void Prime();
 
-    void Test();
+    void Train();
 
     void SaveWithName();
 

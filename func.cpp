@@ -58,13 +58,12 @@ void SoftMaxInplace(int size, double* vec) {
     std::transform(vec, vec + size, vec, [norm](double x) { return std::exp(x) * norm; });
 }
 
-auto Error(int size, double* vec, int ind) -> double {
-    vec[ind] = vec[ind] - 1;
+auto IsCorrectResult(int size, double* vec, int label) -> bool {
+    auto max_iter = std::max_element(vec, vec + size);
 
-    return std::transform_reduce(vec, vec + size, 0.0, std::plus<>(),
-                                 [](double x) { return x * x; });
+    return std::distance(vec, max_iter) == label;
 }
 
-void DxErrorInplace(int size, double* vec, int ind) {
-    vec[ind] = vec[ind] - 1;
+void DxErrorInplace(int size, double* vec, int label) {
+    vec[label] = vec[label] - 1;
 }

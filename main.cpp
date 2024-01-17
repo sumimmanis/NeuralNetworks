@@ -1,6 +1,6 @@
 #include "ui.h"
 
-auto main() -> int {
+auto main(int argc, char const* argv[]) -> int {
     Ui ui;
 
     while (true) {
@@ -14,7 +14,7 @@ auto main() -> int {
         } else if (arg == "-p") {
             ui.Prime();
         } else if (arg == "-t") {
-            ui.Test();
+            ui.Train();
         } else if (arg == "-S") {
             ui.SaveWithName();
         } else if (arg == "-s") {

@@ -1,8 +1,8 @@
 #include "network.h"
 
-void NeuralNetwork::Prime(std::deque<int>& hidden_layers, ActFunc act_func_name) {
-    func_ = GetActFunc(act_func_name);
-    dfunc_ = GetDxActFunc(act_func_name);
+void NeuralNetwork::Prime(std::deque<int>& hidden_layers, ActFunc activation_func_name) {
+    func_ = GetActFunc(activation_func_name);
+    dfunc_ = GetDxActFunc(activation_func_name);
 
     deapth_ = hidden_layers.size() + 1;
 
@@ -25,12 +25,15 @@ void NeuralNetwork::Prime(std::deque<int>& hidden_layers, ActFunc act_func_name)
     }
 
     train_data_ = Data("../Extern/MNIST/parced_60k", kTtrainNum, kIn);
-    func_name_ = act_func_name;
+    func_name_ = activation_func_name;
 }
 
 void NeuralNetwork::Train(int batch_size, double rate, int runs) {
     std::vector<Eigen::MatrixXd> vNbW(deapth_);
     std::vector<Eigen::MatrixXd> vNbB(deapth_);
+
+    Eigen::MatrixXd X;
+    int num_of_batches = kTtrainNum / batch_size;
 
     for (int i = 0; i < deapth_; ++i) {
         vNbW[i] = Eigen::MatrixXd(layers_[i].W.rows(), layers_[i].W.cols());
@@ -38,20 +41,21 @@ void NeuralNetwork::Train(int batch_size, double rate, int runs) {
     }
 
     for (int run = 0; run < runs; ++run) {
-        std::cout << "run  " << run << "  out of  " << runs << " ... " << std::flush;
+        std::cout << "running  " << run << "  out of  " << runs << std::endl;
 
-        TrainRun(batch_size, rate, vNbW, vNbB);
+        TrainRun(batch_size, rate, num_of_batches, vNbW, vNbB, X);
+
         train_data_.Randomise();
 
-        std::cout << std::endl;
+        std::cout << "done" << std::endl;
     }
 }
 
-void NeuralNetwork::TrainRun(int batch_size, int rate, std::vector<Eigen::MatrixXd>& vNbW,
-                             std::vector<Eigen::MatrixXd>& vNbB) {
-    Eigen::MatrixXd X;
-    int num_of_batces = kTtrainNum / batch_size;
-    for (int i = 0; i < num_of_batces; i++) {
+void NeuralNetwork::TrainRun(int batch_size, double rate, int num_of_batches,
+                             std::vector<Eigen::MatrixXd>& vNbW, std::vector<Eigen::MatrixXd>& vNbB,
+                             Eigen::MatrixXd& X) {
+
+    for (int i = 0; i < num_of_batches; i++) {
         for (int j = 0; j < deapth_; ++j) {
             vNbW[j].setZero();
             vNbB[j].setZero();
@@ -74,8 +78,8 @@ void NeuralNetwork::TrainRun(int batch_size, int rate, std::vector<Eigen::Matrix
         }
 
         for (int j = 0; j < deapth_; ++j) {
-            layers_[j].W -= rate / num_of_batces * vNbW[j];
-            layers_[j].B -= rate / num_of_batces * vNbB[j];
+            layers_[j].W -= rate / num_of_batches * vNbW[j];
+            layers_[j].B -= rate / num_of_batches * vNbB[j];
         }
     }
 }
@@ -123,8 +127,8 @@ void NeuralNetwork::BackProp(Eigen::MatrixXd& Nb) {
 
         Nb = (layers_[i].W.transpose() * Nb).cwiseProduct(CurrLayer.Z.unaryExpr(dfunc_));
 
-        CurrLayer.nablB = Nb;
         CurrLayer.nablW = Nb * CurrLayer.prevX.transpose();
+        CurrLayer.nablB = Nb;
     }
 }
 
@@ -229,13 +233,7 @@ auto NeuralNetwork::GetTestError() -> double {
         test_data.Fill(X.data());
         ForwardProp(X);
 
-        int y = test_data.GetLabel();
-
-        auto max_iter = std::max_element(X.data(), X.data() + X.size());
-
-        if (std::distance(X.data(), max_iter) == y) {
-            matches += 1;
-        }
+        matches += IsCorrectResult(X.size(), X.data(), test_data.GetLabel());
     }
 
     return matches / kTestNum;

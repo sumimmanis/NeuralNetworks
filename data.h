@@ -23,11 +23,10 @@ private:
     int size_;
 
     std::mt19937_64 gen_;
+    std::vector<int> pm_;
 
     std::vector<uint8_t> digits_;
     std::vector<uint8_t> labels_;
-
-    std::vector<int> pm_;
 
     int ind_ = 0;
 };
