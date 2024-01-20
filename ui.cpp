@@ -1,25 +1,6 @@
 #include "ui.h"
 
-Ui::Ui() : act_func_(ActFunc::SIGMOID) {}
-
-void Ui::SetActFunc() {
-    std::string arg;
-    std::cin >> arg;
-    if (arg == "SIGMOID") {
-        act_func_ = ActFunc::SIGMOID;
-    } else if (arg == "RELU") {
-        act_func_ = ActFunc::RELU;
-    } else if (arg == "TANH") {
-        act_func_ = ActFunc::TANH;
-    } else {
-        std::cerr << "no such activation function, defaulted to SEGMOID" << std::endl;
-    }
-
-    if (primed_) {
-        std::cerr << "the network has already been primed, your change will not take affect";
-    }
-}
-
+namespace NeuralNetwork {
 void Ui::LoadAndPrime() {
     try {
         std::cin >> in_name_;
@@ -33,6 +14,8 @@ void Ui::LoadAndPrime() {
 
 void Ui::Prime() {
     std::deque<int> hidden_layers;
+    std::deque<ActFunc> act_funcs;
+
     try {
         int num;
         std::cin >> num;
@@ -41,7 +24,10 @@ void Ui::Prime() {
             std::cin >> layer;
             hidden_layers.push_back(layer);
         }
-        network_.Prime(hidden_layers, act_func_);
+        for (int j = 0; j < num; ++j) {
+            act_funcs.push_back(GetActFunc());
+        }
+        network_.Prime(hidden_layers, act_funcs);
         primed_ = true;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
@@ -55,9 +41,9 @@ void Ui::Train() {
         }
         int batch_size;
         double rate;
-        int runs;
-        std::cin >> batch_size >> rate >> runs;
-        network_.Train(batch_size, rate, runs);
+        int epoch;
+        std::cin >> batch_size >> rate >> epoch;
+        network_.Train(batch_size, rate, epoch);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
@@ -69,7 +55,7 @@ void Ui::SaveWithName() {
     double error = network_.GetTestError();
 
     std::stringstream ss;
-    ss << std::fixed << std::setprecision(3) << error;
+    ss << std::fixed << std::setprecision(4) << error;
 
     network_.Save("../params/" + out_name);
     std::cout << "saved  " << out_name << std::endl;
@@ -81,9 +67,9 @@ void Ui::Save() {
     std::cout << "error  " << error << std::endl;
 
     std::stringstream ss;
-    ss << std::fixed << std::setprecision(3) << error;
+    ss << std::fixed << std::setprecision(4) << error;
     if (has_name_) {
-        out_name = ss.str() + in_name_.substr(5);
+        out_name = ss.str() + in_name_.substr(6);
     } else {
         out_name = ss.str();
     }
@@ -94,5 +80,22 @@ void Ui::Save() {
 
 void Ui::CheckAccuracy() {
     double error = network_.GetTestError();
-    std::cout << "error  " << error << std::endl;
+    std::cout << "accuracy  " << error << std::endl;
 }
+
+ActFunc Ui::GetActFunc() {
+    std::string arg;
+    std::cin >> arg;
+    if (arg == "SIGMOID") {
+        return SIGMOID;
+    } else if (arg == "RELU") {
+        return RELU;
+    } else if (arg == "TANH") {
+        return TANH;
+    } else if (arg == "SOFTMAX" ) {
+        return SOFTMAX;
+    }
+    std::cerr << "no such activation function, defaulted to SIGMOID" << std::endl;
+    return SIGMOID;
+}
+}  // namespace NeuralNetwork

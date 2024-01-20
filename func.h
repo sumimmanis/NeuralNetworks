@@ -6,26 +6,30 @@
 #include <functional>
 #include <numeric>
 
-enum class ActFunc { SIGMOID, RELU, TANH };
+#include "Extern/Eigen/Eigen"
 
-auto Sigmoid(double x) -> double;
+namespace NeuralNetwork {
+enum ActFunc { SIGMOID, RELU, TANH, SOFTMAX };
 
-auto DxSigmoid(double x) -> double;
+namespace impl {
+void Sigmoid(Eigen::MatrixXd& X);
 
-auto Relu(double x) -> double;
+void DxSigmoid(Eigen::MatrixXd& X);
 
-auto DxRelu(double x) -> double;
+void Relu(Eigen::MatrixXd& X);
 
-auto Tanh(double x) -> double;
+void DxRelu(Eigen::MatrixXd& X);
 
-auto DxTanh(double x) -> double;
+void Tanh(Eigen::MatrixXd& X);
 
-auto GetActFunc(ActFunc name) -> std::function<double(double)>;
+void DxTanh(Eigen::MatrixXd& X);
 
-auto GetDxActFunc(ActFunc name) -> std::function<double(double)>;
+void SoftMax(Eigen::MatrixXd& X);
 
-void SoftMaxInplace(int size, double* vec);
+void DxSoftMax(Eigen::MatrixXd& X);
+}  // namespace impl
 
-auto IsCorrectResult(int size, double* vec, int label) -> bool;
+auto GetActFunc(ActFunc name) -> std::function<void(Eigen::MatrixXd&)>;
 
-void DxErrorInplace(int size, double* vec, int label);
+auto GetDxActFunc(ActFunc name) -> std::function<void(Eigen::MatrixXd&)>;
+}  // namespace NeuralNetwork

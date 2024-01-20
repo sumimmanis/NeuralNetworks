@@ -1,69 +1,80 @@
 #include "func.h"
 
-auto Sigmoid(double x) -> double {
-    return 1.0 / (1.0 + std::exp(-x));
+namespace NeuralNetwork {
+namespace impl {
+void Sigmoid(Eigen::MatrixXd& X) {
+    std::transform(X.data(), X.data() + X.size(), X.data(),
+                   [](double x) { return 1.0 / (1.0 + std::exp(-x)); });
 }
 
-auto DxSigmoid(double x) -> double {
-    return Sigmoid(x) * (1 - Sigmoid(x));
+void DxSigmoid(Eigen::MatrixXd& X) {
+    std::transform(X.data(), X.data() + X.size(), X.data(), [](double x) {
+        double sigmoid = 1.0 / (1.0 + std::exp(-x));
+        return sigmoid * (1.0 - sigmoid);
+    });
 }
 
-auto Relu(double x) -> double {
-    return std::max(0.0, x);
+void Relu(Eigen::MatrixXd& X) {
+    std::transform(X.data(), X.data() + X.size(), X.data(),
+                   [](double x) { return x > 0 ? x : 0.0; });
 }
 
-auto DxRelu(double x) -> double {
-    return (x > 0) ? 1.0 : 0.0;
+void DxRelu(Eigen::MatrixXd& X) {
+    std::transform(X.data(), X.data() + X.size(), X.data(),
+                   [](double x) { return (x > 0.0) ? 1.0 : 0.0; });
 }
 
-auto Tanh(double x) -> double {
-    return std::tanh(x);
+void Tanh(Eigen::MatrixXd& X) {
+    std::transform(X.data(), X.data() + X.size(), X.data(), [](double x) { return std::tanh(x); });
 }
 
-auto DxTanh(double x) -> double {
-    return 1.0 - std::tanh(x) * std::tanh(x);
+void DxTanh(Eigen::MatrixXd& X) {
+    std::transform(X.data(), X.data() + X.size(), X.data(), [](double x) {
+        double tanh_val = std::tanh(x);
+        return 1.0 - tanh_val * tanh_val;
+    });
 }
 
-
-auto GetActFunc(ActFunc name) -> std::function<double(double)> {
-    switch (name) {
-        case ActFunc::SIGMOID:
-            return Sigmoid;
-        case ActFunc::RELU:
-            return Relu;
-        case ActFunc::TANH:
-            return Tanh;
-        default:
-            assert(false);
-    }
-}
-
-auto GetDxActFunc(ActFunc name) -> std::function<double(double)> {
-    switch (name) {
-        case ActFunc::SIGMOID:
-            return DxSigmoid;
-        case ActFunc::RELU:
-            return DxRelu;
-        case ActFunc::TANH:
-            return DxTanh;
-        default:
-            assert(false);
-    }
-}
-
-void SoftMaxInplace(int size, double* vec) {
-    double norm = 1 / std::transform_reduce(vec, vec + size, 0.0, std::plus<>(),
+void SoftMax(Eigen::MatrixXd& X) {
+    double norm = 1 / std::transform_reduce(X.data(), X.data() + X.size(), 0.0, std::plus<>(),
                                             [](double x) { return std::exp(x); });
 
-    std::transform(vec, vec + size, vec, [norm](double x) { return std::exp(x) * norm; });
+    std::transform(X.data(), X.data() + X.size(), X.data(),
+                   [norm](double x) { return std::exp(x) * norm; });
 }
 
-auto IsCorrectResult(int size, double* vec, int label) -> bool {
-    auto max_iter = std::max_element(vec, vec + size);
+void DxSoftMax(Eigen::MatrixXd& X) {
+    assert(false);
+}
+}  // namespace impl
 
-    return std::distance(vec, max_iter) == label;
+auto GetActFunc(ActFunc name) -> std::function<void(Eigen::MatrixXd&)> {
+    switch (name) {
+        case SIGMOID:
+            return impl::Sigmoid;
+        case RELU:
+            return impl::Relu;
+        case TANH:
+            return impl::Tanh;
+        case SOFTMAX:
+            return impl::SoftMax;
+        default:
+            assert(false);
+    }
 }
 
-void DxErrorInplace(int size, double* vec, int label) {
-    vec[label] = vec[label] - 1;
+auto GetDxActFunc(ActFunc name) -> std::function<void(Eigen::MatrixXd&)> {
+    switch (name) {
+        case SIGMOID:
+            return impl::DxSigmoid;
+        case RELU:
+            return impl::DxRelu;
+        case TANH:
+            return impl::DxTanh;
+        case SOFTMAX:
+            return impl::DxSoftMax;
+        default:
+            assert(false);
+    }
 }
+}  // namespace NeuralNetwork

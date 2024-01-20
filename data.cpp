@@ -1,6 +1,8 @@
 #include "data.h"
 
-Data::Data(const std::string& name, int num, int size) : num_(num), size_(size), gen_(326) {
+namespace NeuralNetwork {
+DataLoader::DataLoader(const std::string& name, int num, int size)
+    : num_(num), size_(size), gen_(326) {
     std::ifstream file_digits;
     std::ifstream file_labels;
 
@@ -24,20 +26,20 @@ Data::Data(const std::string& name, int num, int size) : num_(num), size_(size),
     file_labels.close();
 }
 
-void Data::Fill(double* vec) {
+void DataLoader::SetMatrix(double* vec) {
     if (ind_ == num_) {
         ind_ = 0;
     }
 
     auto begin = digits_.begin() + pm_[ind_] * size_;
-
     std::copy(begin, begin + size_, vec);
 }
 
-void Data::Randomise() {
+void DataLoader::Randomise() {
     std::shuffle(pm_.begin(), pm_.end(), gen_);
 }
 
-auto Data::GetLabel() -> int {
+auto DataLoader::GetLabel() -> int {
     return labels_[pm_[ind_++]];
 }
+}  // namespace NeuralNetwork

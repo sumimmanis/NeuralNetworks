@@ -16,56 +16,47 @@ Prime the network at start with `-p` or `-lp` and then you can train, test, and 
 
 `-lp name` loads file  `name` and primes it with loaded params.
 
-`-p num layers...` primes the network. Set `num` of inner layers and specify their dimentions (one for each layer) with `layers...`
+`-p num layers...  func... ` primes the network. Set `num` of inner layers and specify their dimensions (one for each layer) with `layers...`, set `num + 1` activation functions.
 
-`-a act_func` set `act_func`, needs to be done before priming. Default is "SIGMOID", "RELU" and "TANH" are also available.
+`-e` run tests
 
-`-e` run tests ("error 0.990%" means that there was one mistake out of a hundred tests)
-
-`-t batch_size rate runs`  trains the network
+`-t batch_size rate epoch`  trains the network
 
 `-s` run tests. Save as file in "params/" with the `name` being the success rate. If the network was loaded as a file the name will be concatenated with the original file name's postfix.
 
-`-S name` run tests. Save asfile in "params/" with the `name`.
+`-S name` run tests. Save as a file in "params/" with the `name`.
 
 `-r` returns
 
 ## example
 
-Load and save and test my best attempt:
-
 ```sh
 ./NeuralNetworks 
--lp 0.911-40-50
+-lp 0.9336
+-t 100 0.5 1
+-e
 -s
 -r
+
 ```
 
 outputs:
 
 ```sh
--lp 0.911-40-50
-activation function name:  SIGMOID
-dimentions of matrices M:
-    40 784
-    50  40
-    10  50
+-lp 0.9336
+TANH
+ 60 784
+RELU
+ 40  60
+SIGMOID
+ 10  40
+-t 100 0.5 1
+running  0  out of  1
+done
+-e
+accuracy  0.9358
 -s
-error  0.9109
-saved  0.911-40-50
+error  0.9358
+saved  0.9358
 -r
 ```
-
-## attempts
-
-In "/params" I have some of my attempts at  trining. If there is a corresponding txt file than the network was trained once and in the txt file there are `batch_size rate runs` and `layers...` If there is no txt file than I've probably trained the network multiple times... but at least I've put `layers...` in the name xD.
-
-## cppcheck
-
-```sh
-mkdir cppcheck-build
-
-cppcheck --cppcheck-build-dir=cppcheck-build --std=c++20 --language=c++ --enable=all --suppressions-list=cppcheck-supressions.txt <file>
-```
-
-Does not work in main for cppcheck is too tired after checking the entire Eigen library... or maybe there are too much suppressed errors, I am still not sure

@@ -1,14 +1,15 @@
+#pragma once
+
 #include <cassert>
 #include <iostream>
 #include <string>
 
 #include "network.h"
 
+namespace NeuralNetwork {
 class Ui {
 public:
-    Ui();
-
-    void SetActFunc();
+    Ui() = default;
 
     void LoadAndPrime();
 
@@ -23,10 +24,13 @@ public:
     void CheckAccuracy();
 
 private:
-    ActFunc act_func_;
+    ActFunc GetActFunc();
+
+private:
     NeuralNetwork network_;
     std::string in_name_;
 
     bool has_name_ = false;
     bool primed_ = false;
 };
+}

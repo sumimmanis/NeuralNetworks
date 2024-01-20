@@ -6,13 +6,14 @@
 #include <string>
 #include <vector>
 
-class Data {
+namespace NeuralNetwork {
+class DataLoader {
 public:
-    Data() = default;
+    DataLoader() = default;
 
-    Data(const std::string& name, int num, int size);
+    DataLoader(const std::string& name, int num, int size);
 
-    void Fill(double* vec);
+    void SetMatrix(double* vec);
 
     auto GetLabel() -> int;
 
@@ -30,3 +31,4 @@ private:
 
     int ind_ = 0;
 };
+}  // namespace NeuralNetwork

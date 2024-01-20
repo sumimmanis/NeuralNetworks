@@ -1,15 +1,13 @@
 #include "ui.h"
 
-auto main(int argc, char const* argv[]) -> int {
-    Ui ui;
+auto main() -> int {
+    NeuralNetwork::Ui ui;
 
     while (true) {
         std::string arg;
         std::cin >> arg;
 
-        if (arg == "-a") {
-            ui.SetActFunc();
-        } else if (arg == "-lp") {
+        if (arg == "-lp") {
             ui.LoadAndPrime();
         } else if (arg == "-p") {
             ui.Prime();

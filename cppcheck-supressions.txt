@@ -1,5 +1,0 @@
-missingIncludeSystem
-unmatchedSuppression
-unusedFunction
-
-*:*Eigen/*
