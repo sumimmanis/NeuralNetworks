@@ -9,7 +9,7 @@
 #include <tuple>
 #include <vector>
 
-#include "Extern/Eigen/Core"
+#include "Eigen/Dense"
 #include "data.h"
 #include "func.h"
 #include "util.h"

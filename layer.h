@@ -2,14 +2,12 @@
 
 #include <algorithm>
 #include <cassert>
-#include <deque>
 #include <exception>
 #include <iomanip>
 #include <iostream>
-#include <tuple>
 #include <vector>
 
-#include "Extern/Eigen/Core"
+#include "Eigen/Dense"
 #include "data.h"
 #include "func.h"
 

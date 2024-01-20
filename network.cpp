@@ -18,7 +18,7 @@ void NeuralNetwork::Prime(std::deque<int>& hidden_layers, std::deque<ActFunc>& f
         layers_[i] = Layer(m, n, func_names[i]);
     }
 
-    training_data_ = DataLoader("../Extern/MNIST/parced_60k", kTrainNum, kIn);
+    training_data_ = DataLoader("../data/MNIST/parced_60k", kTrainNum, kIn);
 }
 
 void NeuralNetwork::Train(int batch_size, double rate, int epoch) {
@@ -135,11 +135,11 @@ void NeuralNetwork::LoadAndPrime(const std::string& name) {
         layers_[i].Read(file);
     }
     file.close();
-    training_data_ = DataLoader("../Extern/MNIST/parced_60k", kTrainNum, kIn);
+    training_data_ = DataLoader("../data/MNIST/parced_60k", kTrainNum, kIn);
 }
 
 auto NeuralNetwork::GetTestError() -> double {
-    DataLoader test_data("../Extern/MNIST/parced_10k", kTrainNum, kIn);
+    DataLoader test_data("../data/MNIST/parced_10k", kTrainNum, kIn);
     Eigen::MatrixXd X;
     int matches = 0;
     for (int i = 0; i < kTestNum; ++i) {

@@ -6,7 +6,7 @@
 #include <functional>
 #include <numeric>
 
-#include "Extern/Eigen/Eigen"
+#include "Eigen/Dense"
 
 namespace NeuralNetwork {
 enum ActFunc { SIGMOID, RELU, TANH, SOFTMAX };

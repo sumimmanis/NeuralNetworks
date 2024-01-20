@@ -28,7 +28,50 @@ Prime the network at start with `-p` or `-lp` and then you can train, test, and 
 
 `-r` returns
 
-## example
+## example I
+### input
+```sh
+./NeuralNetworks 
+-p 2
+60 30
+TANH TANH SIGMOID
+-t 10 3 5
+-e
+-t 40 2 4
+-e
+-s
+```
+
+### output
+
+```sh
+-p 2
+60 30
+TANH TANH SIGMOID
+-t 10 3 5
+running  0  out of  5
+running  1  out of  5
+running  2  out of  5
+running  3  out of  5
+running  4  out of  5
+done
+-e
+accuracy  0.8323
+-t 40 2 4
+running  0  out of  4
+running  1  out of  4
+running  2  out of  4
+running  3  out of  4
+done
+-e
+accuracy  0.8525
+-s
+error  0.8525
+saved  0.8525
+```
+
+## example II
+### input
 
 ```sh
 ./NeuralNetworks 
@@ -36,11 +79,9 @@ Prime the network at start with `-p` or `-lp` and then you can train, test, and 
 -t 100 0.5 1
 -e
 -s
--r
-
 ```
 
-outputs:
+### output
 
 ```sh
 -lp 0.9336
@@ -58,5 +99,4 @@ accuracy  0.9358
 -s
 error  0.9358
 saved  0.9358
--r
 ```

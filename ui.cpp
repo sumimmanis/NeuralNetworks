@@ -4,7 +4,7 @@ namespace NeuralNetwork {
 void Ui::LoadAndPrime() {
     try {
         std::cin >> in_name_;
-        network_.LoadAndPrime("../params/" + in_name_);
+        network_.LoadAndPrime("../data/params/" + in_name_);
         primed_ = true;
         has_name_ = true;
     } catch (const std::exception& e) {
@@ -57,7 +57,7 @@ void Ui::SaveWithName() {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(4) << error;
 
-    network_.Save("../params/" + out_name);
+    network_.Save("../data/params/" + out_name);
     std::cout << "saved  " << out_name << std::endl;
 }
 
@@ -74,7 +74,7 @@ void Ui::Save() {
         out_name = ss.str();
     }
 
-    network_.Save("../params/" + out_name);
+    network_.Save("../data/params/" + out_name);
     std::cout << "saved  " << out_name << std::endl;
 }
 
@@ -92,7 +92,7 @@ ActFunc Ui::GetActFunc() {
         return RELU;
     } else if (arg == "TANH") {
         return TANH;
-    } else if (arg == "SOFTMAX" ) {
+    } else if (arg == "SOFTMAX") {
         return SOFTMAX;
     }
     std::cerr << "no such activation function, defaulted to SIGMOID" << std::endl;
