@@ -10,4 +10,5 @@ auto IsCorrect(int size, double* vec, int label) -> bool {
 void DxError(int size, double* vec, int label) {
     vec[label] = vec[label] - 1;
 }
+
 }  // namespace NeuralNetwork

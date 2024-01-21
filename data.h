@@ -17,14 +17,14 @@ public:
 
     auto GetLabel() -> int;
 
-    void Randomise();
+    void Shuffle();
 
 private:
     int num_;
     int size_;
 
     std::mt19937_64 gen_;
-    std::vector<int> pm_;
+    std::vector<int> mapping_;
 
     std::vector<uint8_t> digits_;
     std::vector<uint8_t> labels_;

@@ -14,7 +14,7 @@ void Ui::LoadAndPrime() {
 
 void Ui::Prime() {
     std::deque<int> hidden_layers;
-    std::deque<ActFunc> act_funcs;
+    std::deque<EnumActFunction> act_funcs;
 
     try {
         int num;
@@ -25,7 +25,9 @@ void Ui::Prime() {
             hidden_layers.push_back(layer);
         }
         for (int j = 0; j < num; ++j) {
-            act_funcs.push_back(GetActFunc());
+            std::string name;
+            std::cin >> name;
+            act_funcs.push_back(GetEnumActFunction(name));
         }
         network_.Prime(hidden_layers, act_funcs);
         primed_ = true;
@@ -81,21 +83,5 @@ void Ui::Save() {
 void Ui::CheckAccuracy() {
     double error = network_.GetTestError();
     std::cout << "accuracy  " << error << std::endl;
-}
-
-ActFunc Ui::GetActFunc() {
-    std::string arg;
-    std::cin >> arg;
-    if (arg == "SIGMOID") {
-        return SIGMOID;
-    } else if (arg == "RELU") {
-        return RELU;
-    } else if (arg == "TANH") {
-        return TANH;
-    } else if (arg == "SOFTMAX") {
-        return SOFTMAX;
-    }
-    std::cerr << "no such activation function, defaulted to SIGMOID" << std::endl;
-    return SIGMOID;
 }
 }  // namespace NeuralNetwork

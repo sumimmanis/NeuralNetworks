@@ -3,7 +3,7 @@
 namespace NeuralNetwork {
 
 
-void NeuralNetwork::Prime(std::deque<int>& hidden_layers, std::deque<ActFunc>& func_names) {
+void NeuralNetwork::Prime(std::deque<int>& hidden_layers, std::deque<EnumActFunction>& func_names) {
     depth_ = hidden_layers.size() + 1;
 
     hidden_layers.push_front(kIn);
@@ -34,10 +34,10 @@ void NeuralNetwork::Train(int batch_size, double rate, int epoch) {
     }
 
     for (int i = 0; i < epoch; ++i) {
-        std::cout << "running  " << i << "  out of  " << epoch  << std::endl;
+        std::cout << "running  " << i << "  out of  " << epoch << std::endl;
 
         TrainRun(batch_size, rate, num_of_batches, vNbW, vNbB, X);
-        training_data_.Randomise();
+        training_data_.Shuffle();
     }
     std::cout << "done" << std::endl;
 }
@@ -77,12 +77,7 @@ void NeuralNetwork::TrainRun(int batch_size, double rate, int num_of_batches,
 
 void NeuralNetwork::ForwardProp(Eigen::MatrixXd& X) {
     for (int i = 0; i < depth_; ++i) {
-        layers_[i].prevX = X;
-
-        layers_[i].Z = layers_[i].W * X + layers_[i].B;
-
-        layers_[i].func(layers_[i].Z);
-        X = layers_[i].Z;
+        layers_[i].ForwardProp(X);
     }
 }
 
@@ -93,9 +88,10 @@ void NeuralNetwork::LastError(Eigen::MatrixXd& X, Eigen::MatrixXd& Nb) {
 
     auto& CurrLayer = layers_[depth_ - 1];
 
-    CurrLayer.dx_func(CurrLayer.Z);
+    CurrLayer.func->Backward(CurrLayer.Z);
     Nb = X.cwiseProduct(CurrLayer.Z);
 
+    Nb = X;
     CurrLayer.nablaB = Nb;
     CurrLayer.nablaW = Nb * CurrLayer.prevX.transpose();
 }
@@ -103,13 +99,7 @@ void NeuralNetwork::LastError(Eigen::MatrixXd& X, Eigen::MatrixXd& Nb) {
 
 void NeuralNetwork::BackProp(Eigen::MatrixXd& Nb) {
     for (int i = depth_ - 1; i > 0; --i) {
-        auto& CurrLayer = layers_[i - 1];
-
-        CurrLayer.dx_func(CurrLayer.Z);
-        Nb = (layers_[i].W.transpose() * Nb).cwiseProduct(CurrLayer.Z);
-
-        CurrLayer.nablaW = Nb * CurrLayer.prevX.transpose();
-        CurrLayer.nablaB = Nb;
+        layers_[i - 1].BackProp(Nb, layers_[i].W);
     }
 }
 

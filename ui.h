@@ -24,13 +24,10 @@ public:
     void CheckAccuracy();
 
 private:
-    ActFunc GetActFunc();
-
-private:
     NeuralNetwork network_;
     std::string in_name_;
 
     bool has_name_ = false;
     bool primed_ = false;
 };
-}
+}  // namespace NeuralNetwork

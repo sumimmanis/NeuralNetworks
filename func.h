@@ -3,33 +3,66 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <functional>
+#include <exception>
+#include <iostream>
+#include <memory>
 #include <numeric>
+#include <string>
 
 #include "Eigen/Dense"
 
 namespace NeuralNetwork {
-enum ActFunc { SIGMOID, RELU, TANH, SOFTMAX };
 
-namespace impl {
-void Sigmoid(Eigen::MatrixXd& X);
+enum EnumActFunction { SIGMOID, RELU, TANH, SOFTMAX };
 
-void DxSigmoid(Eigen::MatrixXd& X);
+class ActFunction {
+public:
+    virtual auto GetName() -> std::string = 0;
+    virtual auto GetEnum() -> EnumActFunction = 0;
 
-void Relu(Eigen::MatrixXd& X);
+    virtual void Forward(Eigen::MatrixXd& X) = 0;
+    virtual void Backward(Eigen::MatrixXd& X) = 0;
 
-void DxRelu(Eigen::MatrixXd& X);
+    virtual ~ActFunction() = default;
+};
 
-void Tanh(Eigen::MatrixXd& X);
+class Sigmoid : public ActFunction {
+public:
+    auto GetName() -> std::string override;
+    auto GetEnum() -> EnumActFunction override;
 
-void DxTanh(Eigen::MatrixXd& X);
+    void Forward(Eigen::MatrixXd& X) override;
+    void Backward(Eigen::MatrixXd& X) override;
+};
 
-void SoftMax(Eigen::MatrixXd& X);
+class Relu : public ActFunction {
+public:
+    auto GetName() -> std::string override;
+    auto GetEnum() -> EnumActFunction override;
 
-void DxSoftMax(Eigen::MatrixXd& X);
-}  // namespace impl
+    void Forward(Eigen::MatrixXd& X) override;
+    void Backward(Eigen::MatrixXd& X) override;
+};
 
-auto GetActFunc(ActFunc name) -> std::function<void(Eigen::MatrixXd&)>;
+class Tanh : public ActFunction {
+public:
+    auto GetName() -> std::string override;
+    auto GetEnum() -> EnumActFunction override;
 
-auto GetDxActFunc(ActFunc name) -> std::function<void(Eigen::MatrixXd&)>;
+    void Forward(Eigen::MatrixXd& X) override;
+    void Backward(Eigen::MatrixXd& X) override;
+};
+
+class SoftMax : public ActFunction {
+public:
+    auto GetName() -> std::string override;
+    auto GetEnum() -> EnumActFunction override;
+
+    void Forward(Eigen::MatrixXd& X) override;
+    void Backward(Eigen::MatrixXd& X) override;
+};
+
+auto GetActFunction(EnumActFunction name) -> std::unique_ptr<ActFunction>;
+auto GetEnumActFunction(const std::string& name) -> EnumActFunction;
+
 }  // namespace NeuralNetwork

@@ -21,7 +21,7 @@ class NeuralNetwork {
 public:
     NeuralNetwork() = default;
 
-    void Prime(std::deque<int>& hidden_layers, std::deque<ActFunc>& func_names);
+    void Prime(std::deque<int>& hidden_layers, std::deque<EnumActFunction>& func_names);
 
     void Train(int batch_size, double rate, int epoch);
 
@@ -34,7 +34,7 @@ public:
 private:
     void ForwardProp(Eigen::MatrixXd& X);
 
-    void TrainRun(int batch_size, double rate, int num_of_batces,
+    void TrainRun(int batch_size, double rate, int num_of_batches,
                   std::vector<Eigen::MatrixXd>& vNbW, std::vector<Eigen::MatrixXd>& vNbB,
                   Eigen::MatrixXd& X);
 

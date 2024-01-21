@@ -15,9 +15,9 @@ DataLoader::DataLoader(const std::string& name, int num, int size)
     digits_.resize(num * size);
     labels_.resize(num);
 
-    pm_.resize(num);
+    mapping_.resize(num);
 
-    std::iota(pm_.begin(), pm_.end(), 0);
+    std::iota(mapping_.begin(), mapping_.end(), 0);
 
     file_digits.read(reinterpret_cast<char*>(digits_.data()), num * size);
     file_labels.read(reinterpret_cast<char*>(labels_.data()), num);
@@ -31,15 +31,15 @@ void DataLoader::SetMatrix(double* vec) {
         ind_ = 0;
     }
 
-    auto begin = digits_.begin() + pm_[ind_] * size_;
+    auto begin = digits_.begin() + mapping_[ind_] * size_;
     std::copy(begin, begin + size_, vec);
 }
 
-void DataLoader::Randomise() {
-    std::shuffle(pm_.begin(), pm_.end(), gen_);
+void DataLoader::Shuffle() {
+    std::shuffle(mapping_.begin(), mapping_.end(), gen_);
 }
 
 auto DataLoader::GetLabel() -> int {
-    return labels_[pm_[ind_++]];
+    return labels_[mapping_[ind_++]];
 }
 }  // namespace NeuralNetwork
