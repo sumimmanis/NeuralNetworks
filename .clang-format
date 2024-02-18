@@ -8,4 +8,4 @@ MaxEmptyLinesToKeep: 2
 DerivePointerAlignment: false
 PointerAlignment: Left
 ReferenceAlignment: Pointer
-
+InsertNewlineAtEOF: true
